@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>HAPPY BIRTHDAY</title>
+
+<style>
+body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background: linear-gradient(135deg,#0b1c2d,#111827);
+    font-family: Arial, sans-serif;
+    color:white;
+    overflow:hidden;
+}
+
+/* confetti is full screen and behind everything */
+#confetti{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100vw;
+    height:100vh;
+    pointer-events:none;
+    z-index:1;
+}
+
+/* text box is above confetti and blocks it */
+.card{
+    max-width:90%;
+    width:420px;
+    background:#0b1c2d;   /* solid background to hide confetti */
+    border-radius:18px;
+    padding:35px 28px;
+    text-align:center;
+    box-shadow:0 0 30px rgba(96,165,250,0.35);
+    cursor:pointer;
+    transition:0.3s;
+    position:relative;
+    z-index:2;
+}
+
+.card:hover{
+    transform:scale(1.02);
+}
+
+.message{
+    font-size:1.2rem;
+    line-height:1.6;
+    transition:opacity 0.4s ease;
+}
+
+.hint{
+    margin-top:16px;
+    font-size:0.85rem;
+    color:#d1d5db;
+}
+</style>
+</head>
+<body>
+
+<canvas id="confetti"></canvas>
+
+<div class="card" onclick="nextMessage(); playMusic();">
+    <div class="message" id="text">Tap to start 💙</div>
+    <div class="hint" id="hint">Tap anywhere in the box to continue</div>
+</div>
+
+<audio id="bgMusic" loop>
+    <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const age = 23;
+
+const messages = [
+`Happy ${age}rd Birthday Sadah🎉`,
+"SADAH NA, I made this little website just for you because of how much you mean to me.",
+"As you turn 23 today,",
+"Sometimes I look at you and realize how grateful I am that life brought you to me.",
+"Not for the big moments, but for the quiet, everyday ones that truly matter.",
+"Thank you for being the place my heart feels safest.",
+"For listening when I talk too much and staying when I say too little.",
+"For understanding me even when I don't fully understand myself.",
+"You turn ordinary days into lighter ones just by being in them. You make silence feel like comfort.",
+"You make love feel steady, patient and kind.",
+"I truly see your effort, your heart, your patience, and the way you care in your own quiet and sincere way.",
+"I notice the little things you do, the way you try,",
+"And the way you show up even when it isn’t easy.",
+"You bring peace in a way I can’t explain properly.",
+"I appreciate you so much,",
+"And I hold a lot of respect for the kind of person you are and the kind of person you are becoming.",
+"I wish and want you to always be happy.",
+"I pray Allah fills your life with ease, light, and barakah, and opens beautiful doors for your future.",
+"May Allah always bless you, guide you, and protect your heart.",
+"May He keep your intentions pure, your mind strong, and your faith firm.",
+"And I pray that Allah preserves you for me in the best way.",
+"Allah ya maka albarka, Allah ya barmin kai.",
+"If I ever forget to say it, please know this: You matter to me more than words can explain.",
+"Loving you is a choice I’ll make gladly, again and again.",
+"I’m proud of you.",
+"You're enough.",
+"Thank you for being such an important figure in my life.",
+"Thank you for being YOU.",
+"I would have said 'Enjoy your special day' but our everyday is special because we have each other, so…",
+"Have another good day.",
+"I LOVE MYSELF, I LOVE YOU AND I LOVE US.",
+"~From your Aisha 💙.",
+"~THE END~"
+];
+
+let index = 0;
+const text = document.getElementById("text");
+
+const canvas = document.getElementById("confetti");
+const ctx = canvas.getContext("2d");
+
+function resize(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
+
+let confetti = [];
+let running = false;
+
+function spawn(){
+    for(let i=0;i<6;i++){
+        confetti.push({
+            x: Math.random()*canvas.width,
+            y: -10,
+            r: Math.random()*4+2,
+            s: Math.random()*3+2,
+            c: `hsl(${Math.random()*360},80%,60%)`
+        });
+    }
+}
+
+function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    confetti.forEach(p=>{
+        p.y += p.s;
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle = p.c;
+        ctx.fill();
+    });
+
+    confetti = confetti.filter(p=>p.y < canvas.height+10);
+
+    if(running){
+        spawn();
+        requestAnimationFrame(animate);
+    }
+}
+
+function startConfetti(){
+    if(!running){
+        running = true;
+        animate();
+    }
+}
+
+function nextMessage(){
+
+    if(index === 0){
+        document.getElementById("hint").style.display = "none";
+        startConfetti();
+    }
+
+    text.style.opacity = 0;
+
+    setTimeout(()=>{
+        text.textContent = messages[index];
+        text.style.opacity = 1;
+
+        index++;
+        if(index >= messages.length){
+            index = messages.length - 1;
+        }
+    },350);
+}
+
+let started = false;
+function playMusic(){
+    if(!started){
+        document.getElementById("bgMusic").play();
+        started = true;
+    }
+}
+</script>
+
+</body>
+</html>
